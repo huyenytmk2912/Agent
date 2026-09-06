@@ -1,35 +1,14 @@
-# Personal Agent
+# Atlas-7B: from-scratch AI foundation
 
-A remote Agent runtime and gateway for executing user-approved tasks on connected devices.
+A from-scratch language-model and coding-agent research stack. The brain is initialized from random weights and never loaded from a pretrained checkpoint.
 
-## Architecture
+## Target
+- 7B decoder-only Transformer
+- 4096 hidden, 32 layers, 32 query heads, 8 KV heads, 11008 SwiGLU intermediate
+- 49152 vocabulary target
+- CPU tiny fallback; GPU/DDP/FSDP-ready design
 
-```text
-Chat UI / AI
-    |
-    v
-Gateway / Job API
-    |
-    v
-Agent Runtime
-    |
-    +-- terminal
-    +-- files (scoped workspace)
-    +-- browser (future)
-    +-- computer control (future)
-    +-- VPS/SSH (future)
-```
+## Stages
+Foundation -> tokenizer/data -> tiny training -> benchmarks -> reasoning/coding -> tools -> memory -> self-improvement -> coding agent/quant -> 7B scaling.
 
-The GitHub repository contains code only. Secrets and device credentials must stay on the runtime host.
-
-## Security
-
-- Default to least-privilege tools.
-- Scope filesystem access to a configured workspace.
-- Require explicit confirmation for destructive or high-impact actions.
-- Do not store passwords, private keys, API tokens, or cookies in Git.
-- Every execution records a job id, status, command/tool, exit code, and timestamps.
-
-## Status
-
-v0.1 is the foundation for the remote job model. A device runtime must be installed and connected before the Agent can operate that device.
+Training is not claimed complete until real checkpoints and metrics exist.
