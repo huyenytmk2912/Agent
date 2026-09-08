@@ -1,0 +1,26 @@
+model:
+  vocab_size: 512
+  d_model: 256
+  n_layers: 4
+  n_heads: 8
+  n_kv_heads: 2
+  ffn_dim: 704
+  max_seq_len: 256
+  rope_theta: 10000.0
+  norm_eps: 1.0e-5
+  tie_embeddings: true
+training:
+  seed: 1337
+  batch_size: 4
+  grad_accum: 1
+  learning_rate: 0.0003
+  min_learning_rate: 0.00003
+  warmup_steps: 10
+  max_steps: 100
+  weight_decay: 0.1
+  grad_clip: 1.0
+  precision: fp32
+  checkpoint_every: 25
+  eval_every: 20
+system:
+  output_dir: runs/tiny
