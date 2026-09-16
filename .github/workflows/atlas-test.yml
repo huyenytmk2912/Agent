@@ -9,4 +9,9 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install torch pytest
-      - run: pytest -q tests/test_atlas_core.py
+      - run: pytest -q
+      - run: python -m atlas.smoke --corpus tests/fixtures/tiny_corpus.jsonl --out-dir runs/ci-tiny --steps 3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atlas-ci-tiny-metrics
+          path: runs/ci-tiny/metrics.json
