@@ -1,0 +1,4 @@
+{"question":"Add 7 and 5","answer":"12","operation":"add","operands":[7,5]}
+{"question":"Subtract 4 from 15","answer":"11","operation":"subtract","operands":[15,4]}
+{"question":"Multiply 6 by 3","answer":"18","operation":"multiply","operands":[6,3]}
+{"question":"Divide 24 by 6","answer":"4","operation":"divide","operands":[24,6]}
