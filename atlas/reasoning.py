@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any, Iterable
 
 
@@ -59,15 +59,30 @@ class ReasoningEngine:
         trace.append(TraceStep("verify", f"predicted={result}; expected={example.answer}"))
         return str(result), trace
 
+    @staticmethod
+    def validate_trace(example: ReasoningExample, predicted: str, trace: list[TraceStep]) -> bool:
+        """Check that a trace has the required ordered steps and consistent values."""
+        if [step.kind for step in trace] != ["parse", "compute", "verify"]:
+            return False
+        if f"operation={example.operation}" not in trace[0].value:
+            return False
+        if f"operands={list(example.operands)}" not in trace[0].value:
+            return False
+        if trace[1].value != predicted:
+            return False
+        return trace[2].value == f"predicted={predicted}; expected={example.answer}"
+
     def verify(self, example: ReasoningExample) -> dict[str, Any]:
         started = time.perf_counter()
         predicted, trace = self.solve(example)
         elapsed_ms = (time.perf_counter() - started) * 1000.0
+        trace_valid = self.validate_trace(example, predicted, trace)
         return {
             "question": example.question,
             "expected": example.answer,
             "predicted": predicted,
             "correct": predicted == example.answer,
+            "trace_valid": trace_valid,
             "latency_ms": elapsed_ms,
             "trace": [asdict(step) for step in trace],
         }
@@ -77,12 +92,15 @@ def benchmark(examples: Iterable[ReasoningExample]) -> dict[str, Any]:
     engine = ReasoningEngine()
     rows = [engine.verify(item) for item in examples]
     correct = sum(int(row["correct"]) for row in rows)
+    trace_valid = sum(int(row["trace_valid"]) for row in rows)
     total = len(rows)
     latencies = [row["latency_ms"] for row in rows]
     return {
         "examples": total,
         "correct": correct,
         "accuracy": (correct / total) if total else 0.0,
+        "trace_valid": trace_valid,
+        "trace_valid_rate": (trace_valid / total) if total else 0.0,
         "mean_latency_ms": (sum(latencies) / total) if total else 0.0,
         "max_latency_ms": max(latencies) if latencies else 0.0,
         "results": rows,
