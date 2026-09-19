@@ -16,8 +16,9 @@
 - Integer add/subtract/multiply/divide execution has explicit validation for empty operands, unsupported operations, division by zero, and non-integer intermediate results.
 - Added trace-integrity validation so benchmark rows now report both answer correctness and trace validity.
 - Added JSONL loading and benchmark reporting with accuracy, trace-valid rate, mean latency, max latency, and per-example traces.
-- Added four deterministic reasoning cases and tests for tampered-trace rejection.
-- Commits in this increment: `d771a6d`, `e1d4dd4`.
+- Added deterministic reasoning curriculum generation in `atlas/reasoning_data.py` for add/subtract/multiply examples, with reproducible seeds and JSONL export.
+- Added `tests/test_reasoning_data.py` to verify reproducibility and required trace fields.
+- Commits in this increment: `7813289`, `0939d90`.
 
 ## Verification policy
 - No quality claim is made from the tiny fixture; it is an integration gate only.
@@ -26,9 +27,13 @@
 - The current reasoning module is scaffolding/evaluation infrastructure, not evidence of learned language-model reasoning.
 
 ## Reasoning stage status
-- Implemented: trace schema, deterministic verifier, trace-integrity checks, benchmark contract, unit/integration tests.
+- Implemented: trace schema, deterministic verifier, trace-integrity checks, benchmark contract, unit/integration tests, reproducible synthetic curriculum generator.
 - Not yet implemented: neural reasoning training objective, chain-of-thought data pipeline, search/planning, verifier-guided decoding, GSM8K-style evaluation, or model-connected reasoning.
-- Provisional reasoning completion: 20% of the reasoning workstream, based on infrastructure only; this percentage is not a model capability score.
+- Provisional reasoning completion: 25% of the reasoning workstream, based on infrastructure only; this percentage is not a model capability score.
+
+## Benchmark note
+- Static review confirms the curriculum generator is deterministic for a fixed seed and emits structured `Question`, `parse`, `compute`, `verify`, and `Answer` records.
+- A local repository test run could not be independently executed from this connector environment; GitHub Actions results for the new commits are not visible yet. Treat CI as pending, not passing.
 
 ## Not yet verified
 - GitHub Actions result for the latest commit is not visible yet from the current connector view.
